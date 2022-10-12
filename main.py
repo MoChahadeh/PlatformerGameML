@@ -1,5 +1,8 @@
 import pygame
 from settings import *
+from ball import *
+
+ball = Ball(index = 0)
 
 while True: 
 
@@ -11,5 +14,6 @@ while True:
 
     # Game loop
     WINDOW.fill(BGCOLOR)
+    ball.update()
     pygame.display.update()
     clock.tick(FPS)

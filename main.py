@@ -1,3 +1,8 @@
+# Oct 13th, 2022, 1:47AM Thursday.
+#   Mohamad Chahadeh, ©2022
+#   https://MoChahadeh.github.io/
+#   https://twitter.com/MoChahadeh
+
 from myPlatform import Platform
 from settings import *
 from ball import *

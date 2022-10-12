@@ -1,3 +1,8 @@
+# Oct 13th, 2022, 1:48AM Thursday.
+#   Mohamad Chahadeh, ©2022
+#   https://MoChahadeh.github.io/
+#   https://twitter.com/MoChahadeh
+
 import pygame.gfxdraw
 import pygame
 from settings import *

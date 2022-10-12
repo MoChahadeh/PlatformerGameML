@@ -10,7 +10,7 @@ from neuralnet import *
 
 
 # Width and Height of pygame window
-WIDTH = 300
+WIDTH = 400
 HEIGHT = 600
 
 
@@ -43,8 +43,8 @@ pygame.font.init()
 writer = pygame.font.SysFont("Roboto", 20)
 
 
-# Snake Sprites Group
-snakes = pygame.sprite.Group()
+# Ball Sprites Group
+balls = pygame.sprite.Group()
 
 
 # State variables

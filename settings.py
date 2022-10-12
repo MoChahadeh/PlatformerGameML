@@ -34,12 +34,13 @@ foodReward = 150
 # Physics Settings
 GRAVITY = 0.5
 FRICTION:pygame.Vector2 = pygame.Vector2(0.1, 0.02)
-JUMPIMPLUSE = 10
+JUMPIMPLUSE = 12
+BOUNCE = 0.5
 
 
 # colors used in game
 BGCOLOR = (100,100,100)
-BALLCOLOR = (50,200,80)
+PLATFORMCOLOR = (50,200,80)
 WHITECOLOR = (255,255,255)
 
 
@@ -50,6 +51,7 @@ writer = pygame.font.SysFont("Roboto", 20)
 
 # Ball Sprites Group
 balls = pygame.sprite.Group()
+platforms = pygame.sprite.Group()
 
 
 # State variables

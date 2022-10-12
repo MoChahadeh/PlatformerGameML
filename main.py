@@ -1,9 +1,14 @@
-from matplotlib import backend_bases
-import pygame
+from myPlatform import Platform
 from settings import *
 from ball import *
 
 ball = Ball(index = 0)
+
+plat1 = Platform(x = WIDTH/2, y = HEIGHT/2 + 100, width = 75, height = 10)
+plat2 = Platform(x = WIDTH/3, y = HEIGHT/3 + 100, width = 75, height = 10)
+
+platforms.add(plat1)
+platforms.add(plat2)
 
 while True: 
 
@@ -12,21 +17,25 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                ball.jump()
-            if event.key == pygame.K_RIGHT:
-                ball.acc.x = 1
-            if event.key == pygame.K_LEFT:
-                ball.acc.x = -1
-        elif event.type == pygame.KEYUP:
+        if event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
                 ball.acc.x = 0
             if event.key == pygame.K_LEFT:
                 ball.acc.x = 0
 
+    keyDownEvents = pygame.key.get_pressed()
+
+    if keyDownEvents[pygame.K_UP]:
+        ball.jump()
+    if keyDownEvents[pygame.K_RIGHT]:
+        ball.acc.x = 1
+    if keyDownEvents[pygame.K_LEFT]:
+        ball.acc.x = -1
+
+
     # Game loop
     WINDOW.fill(BGCOLOR)
     ball.update()
+    platforms.update()
     pygame.display.update()
     clock.tick(FPS)

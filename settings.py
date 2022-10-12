@@ -33,7 +33,7 @@ foodReward = 150
 
 # Physics Settings
 GRAVITY = 0.5
-FRICTION = 0.3
+FRICTION:pygame.Vector2 = pygame.Vector2(0.1, 0.02)
 JUMPIMPLUSE = 10
 
 

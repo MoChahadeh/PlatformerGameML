@@ -10,8 +10,8 @@ from neuralnet import *
 
 
 # Width and Height of pygame window
-WIDTH = 400
-HEIGHT = 600
+WIDTH: float = 400
+HEIGHT: float = 600
 
 
 # Game windows initialization
@@ -31,10 +31,15 @@ copyBest = 15
 mutationRate = 0.12
 foodReward = 150
 
+# Physics Settings
+GRAVITY = 0.5
+FRICTION = 0.3
+JUMPIMPLUSE = 10
+
 
 # colors used in game
 BGCOLOR = (100,100,100)
-SNAKECOLOR = (50,200,80)
+BALLCOLOR = (50,200,80)
 WHITECOLOR = (255,255,255)
 
 

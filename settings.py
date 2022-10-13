@@ -34,8 +34,12 @@ foodReward = 150
 # Physics Settings
 GRAVITY = 0.5
 FRICTION:pygame.Vector2 = pygame.Vector2(0.1, 0.02)
-JUMPIMPLUSE = 12
+JUMPIMPLUSE = 13
 BOUNCE = 0.5
+
+
+net = NeuralNet(5, 8, 8, 2)
+
 
 
 # colors used in game
@@ -57,5 +61,5 @@ platforms = pygame.sprite.Group()
 # State variables
 genNumber = 1
 nets: list[NeuralNet] = []
-fitness = [0] * population
+fitness = [0]*population
 dead = [False] * population

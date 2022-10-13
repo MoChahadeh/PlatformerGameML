@@ -25,7 +25,7 @@ clock = pygame.time.Clock()
 
 
 # gameplay settings
-population = 300
+population = 5
 initialMoves = 200
 copyBest = 15
 mutationRate = 0.12
@@ -38,7 +38,6 @@ JUMPIMPLUSE = 13
 BOUNCE = 0.5
 
 
-net = NeuralNet(5, 8, 8, 2)
 
 
 

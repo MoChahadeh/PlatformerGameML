@@ -9,24 +9,21 @@ from ball import *
 from random import randint
 from copy import deepcopy
 
-ball = Ball(index = 0)
-
+for i in range(population):
+    balls.add(Ball(index=i))
+    nets.append(NeuralNet(5, 8, 8, 2))
 
 
 def drawLabels():
 
-    # genText = writer.render("Generation "+str(genNumber), True, (255,255,255))  #   Generation Number Label
-    # aliveText = writer.render("Alive: " + str(sum(map(lambda x : x ==False, dead))), True, (255,255,255))   #   number of birds alive Label
-    # bestFitness = writer.render("Best Fitness: " + str(max(fitness)), True, (255,255,255))  #   Fitness of best performing Model
+    genText = writer.render("Generation "+str(genNumber), True, (255,255,255))  #   Generation Number Label
+    aliveText = writer.render("Alive: " + str(sum(map(lambda x : x ==False, dead))), True, (255,255,255))   #   number of birds alive Label
+    bestFitness = writer.render("Best Fitness: " + str(max(fitness)), True, (255,255,255))  #   Fitness of best performing Model
 
-    # #   Drawing the labels on the screen
-    # WINDOW.blit(bestFitness, (10,50))
-    # WINDOW.blit(aliveText, (10,30))
-    # WINDOW.blit(genText, (10,10))
-
-    scoreText = writer.render("Score: "+ str(fitness[ball.index]), True, (255,255,255))
-
-    WINDOW.blit(scoreText, (10,10))
+    #   Drawing the labels on the screen
+    WINDOW.blit(bestFitness, (10,50))
+    WINDOW.blit(aliveText, (10,30))
+    WINDOW.blit(genText, (10,10))
 
 while True: 
 
@@ -41,30 +38,31 @@ while True:
             if event.key == pygame.K_LEFT:
                 ball.acc.x = 0
 
-    keyDownEvents = pygame.key.get_pressed()
+    # keyDownEvents = pygame.key.get_pressed()
 
-    if keyDownEvents[pygame.K_UP]:
-        ball.jump()
-    if keyDownEvents[pygame.K_RIGHT]:
-        ball.acc.x = 1
-    if keyDownEvents[pygame.K_LEFT]:
-        ball.acc.x = -1
+    # if keyDownEvents[pygame.K_UP]:
+    #     ball.jump()
+    # if keyDownEvents[pygame.K_RIGHT]:
+    #     ball.acc.x = 1
+    # if keyDownEvents[pygame.K_LEFT]:
+    #     ball.acc.x = -1
 
-    closest = list(filter(lambda x : x.rect.top < ball.pos.y,ball.platforms.sprites()))[0]
-    inputs = [[ball.pos.x, ball.pos.y, ball.inAir, closest.rect.left, closest.rect.right]]
+    for ball in balls.sprites():
+        closest = list(filter(lambda x : x.rect.top < ball.pos.y,ball.platforms.sprites()))[0]
+        inputs = [[ball.pos.x, ball.pos.y, ball.inAir, closest.rect.left, closest.rect.right]]
 
-    decision = net.forward(inputs)
-    
-    print(decision.T[0])
-    # if (decision.T[0][0] > 0.5): ball.jump()
-    # if (decision.T[0][1] < 0.5): ball.acc.x = -1
-    # elif (decision.T[0][1] > 0.5): ball.acc.x = 1
-    # elif (decision.T[0][1] == 0.5): ball.acc.x = 0
+        decision = nets[ball.index].forward(inputs)
+        
+        print(decision.T[0])
+        if (decision.T[0][0] > 0.5): ball.jump()
+        if (decision.T[0][1] < 0.5): ball.acc.x = -1
+        elif (decision.T[0][1] > 0.5): ball.acc.x = 1
+        elif (decision.T[0][1] == 0.5): ball.acc.x = 0
 
 
     # Game loop
     WINDOW.fill(BGCOLOR)
-    ball.update()
+    balls.update()
     drawLabels()
     pygame.display.update()
     clock.tick(FPS)

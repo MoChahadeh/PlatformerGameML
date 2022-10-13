@@ -9,7 +9,6 @@ from random import randint
 from settings import *
 from myPlatform import Platform
 
-
 class Ball(pygame.sprite.Sprite):
 
     def __init__(self, *groups, index: int) -> None:
@@ -20,7 +19,7 @@ class Ball(pygame.sprite.Sprite):
         self.platforms = pygame.sprite.Group()
 
         for i in range(int(HEIGHT/60)):
-            plat = Platform(group= self.platforms, x = randint(50, WIDTH-50),y= HEIGHT - i*60,width= 100,height= 10)
+            plat = Platform(group= self.platforms, ball = self, x = randint(50, WIDTH-50),y= HEIGHT - i*60,width= 100,height= 10)
             self.platforms.add(plat)
 
         self.pos = pygame.Vector2(WIDTH/2, HEIGHT/2)
@@ -79,7 +78,7 @@ class Ball(pygame.sprite.Sprite):
             self.vel = pygame.Vector2(0, 0)
             self.acc = pygame.Vector2(0, GRAVITY)
             self.inAir = False
-            net.mutate(0.15)
+            nets[self.index].mutate(0.15)
     
     def checkCollision(self):
         self.inAir = True 

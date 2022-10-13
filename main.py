@@ -12,9 +12,6 @@ from copy import deepcopy
 ball = Ball(index = 0)
 
 
-for i in range(int(HEIGHT/60)):
-    plat = Platform(x = randint(50, WIDTH-50),y= HEIGHT - i*60,width= 100,height= 10)
-    platforms.add(plat)
 
 def drawLabels():
 
@@ -53,22 +50,21 @@ while True:
     if keyDownEvents[pygame.K_LEFT]:
         ball.acc.x = -1
 
-    closest = list(filter(lambda x : x.rect.top < ball.pos.y,platforms.sprites()))[0]
+    closest = list(filter(lambda x : x.rect.top < ball.pos.y,ball.platforms.sprites()))[0]
     inputs = [[ball.pos.x, ball.pos.y, ball.inAir, closest.rect.left, closest.rect.right]]
 
     decision = net.forward(inputs)
     
     print(decision.T[0])
-    if (decision.T[0][0] > 0.5): ball.jump()
-    if (decision.T[0][1] < 0.5): ball.acc.x = -1
-    elif (decision.T[0][1] > 0.5): ball.acc.x = 1
-    elif (decision.T[0][1] == 0.5): ball.acc.x = 0
+    # if (decision.T[0][0] > 0.5): ball.jump()
+    # if (decision.T[0][1] < 0.5): ball.acc.x = -1
+    # elif (decision.T[0][1] > 0.5): ball.acc.x = 1
+    # elif (decision.T[0][1] == 0.5): ball.acc.x = 0
 
 
     # Game loop
     WINDOW.fill(BGCOLOR)
     ball.update()
-    platforms.update()
     drawLabels()
     pygame.display.update()
     clock.tick(FPS)

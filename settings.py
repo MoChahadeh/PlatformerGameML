@@ -55,7 +55,6 @@ writer = pygame.font.SysFont("Roboto", 20)
 
 # Ball Sprites Group
 balls = pygame.sprite.Group()
-platforms = pygame.sprite.Group()
 
 
 # State variables

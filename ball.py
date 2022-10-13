@@ -34,6 +34,11 @@ class Ball(pygame.sprite.Sprite):
         if self.inAir:
             self.vel.y += self.acc.y
             self.pos.y += self.vel.y
+        if self.pos.y <= HEIGHT/3 and self.vel.y < 0:
+            self.pos.y += -self.vel.y*2
+            for plat in platforms:
+                plat.pos.y -= self.vel.y*2
+                plat.rect.y -= self.vel.y*2
 
         self.vel.x += self.acc.x
         self.pos.x += self.vel.x
@@ -65,6 +70,7 @@ class Ball(pygame.sprite.Sprite):
             self.vel = pygame.Vector2(0, 0)
             self.acc = pygame.Vector2(0, GRAVITY)
             self.inAir = False
+            net.mutate(0.15)
     
     def checkCollision(self):
         self.inAir = True 

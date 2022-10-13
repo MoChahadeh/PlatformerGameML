@@ -25,12 +25,12 @@ class NeuralNet():
     def __init__(self, i:int, h1:int, h2: int, o:int):
 
         # Initalizing Weights and biases with random numbers between -0.5 and +0.5
-        self.W1:np.ndarray = (np.random.rand(h1, i) - 0.5)*5
-        self.b1:np.ndarray = (np.random.rand(h1, 1) - 0.5)*5
-        self.W2:np.ndarray = (np.random.rand(h2, h1) -0.5)*5
-        self.b2:np.ndarray = (np.random.rand(h2,1) -0.5)*5
-        self.W3:np.ndarray = (np.random.rand(o, h2) -0.5)*5
-        self.b3:np.ndarray = (np.random.rand(o,1) -0.5)*5
+        self.W1:np.ndarray = (np.random.rand(h1, i) - 0.5)*3
+        self.b1:np.ndarray = (np.random.rand(h1, 1) - 0.5)*3
+        self.W2:np.ndarray = (np.random.rand(h2, h1) -0.5)*3
+        self.b2:np.ndarray = (np.random.rand(h2,1) -0.5)*3
+        self.W3:np.ndarray = (np.random.rand(o, h2) -0.5)*3
+        self.b3:np.ndarray = (np.random.rand(o,1) -0.5)*3
     
     # forward propogation
     def forward(self, inputs: np.ndarray):

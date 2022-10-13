@@ -4,6 +4,7 @@
 #   https://twitter.com/MoChahadeh
 
 import pygame
+from random import randint
 from settings import *
 
 
@@ -20,4 +21,11 @@ class Platform(pygame.sprite.Sprite):
         pygame.draw.rect(WINDOW, PLATFORMCOLOR, self.rect)
 
     def update(self):
+        self.checkDeath()
         self.draw()            
+    
+    def checkDeath(self):
+        if self.rect.top > HEIGHT:
+            fitness[0] += 1
+            platforms.add(Platform(x = randint(50, WIDTH-50),y= randint(-60,-10),width= 100,height= 10))
+            self.kill()

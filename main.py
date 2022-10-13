@@ -6,14 +6,30 @@
 from myPlatform import Platform
 from settings import *
 from ball import *
+from random import randint
+from copy import deepcopy
 
 ball = Ball(index = 0)
 
-plat1 = Platform(x = WIDTH/2, y = HEIGHT/2 + 100, width = 75, height = 10)
-plat2 = Platform(x = WIDTH/3, y = HEIGHT/3 + 100, width = 75, height = 10)
 
-platforms.add(plat1)
-platforms.add(plat2)
+for i in range(int(HEIGHT/60)):
+    plat = Platform(x = randint(50, WIDTH-50),y= HEIGHT - i*60,width= 100,height= 10)
+    platforms.add(plat)
+
+def drawLabels():
+
+    # genText = writer.render("Generation "+str(genNumber), True, (255,255,255))  #   Generation Number Label
+    # aliveText = writer.render("Alive: " + str(sum(map(lambda x : x ==False, dead))), True, (255,255,255))   #   number of birds alive Label
+    # bestFitness = writer.render("Best Fitness: " + str(max(fitness)), True, (255,255,255))  #   Fitness of best performing Model
+
+    # #   Drawing the labels on the screen
+    # WINDOW.blit(bestFitness, (10,50))
+    # WINDOW.blit(aliveText, (10,30))
+    # WINDOW.blit(genText, (10,10))
+
+    scoreText = writer.render("Score: "+ str(fitness[ball.index]), True, (255,255,255))
+
+    WINDOW.blit(scoreText, (10,10))
 
 while True: 
 
@@ -37,10 +53,22 @@ while True:
     if keyDownEvents[pygame.K_LEFT]:
         ball.acc.x = -1
 
+    closest = list(filter(lambda x : x.rect.top < ball.pos.y,platforms.sprites()))[0]
+    inputs = [[ball.pos.x, ball.pos.y, ball.inAir, closest.rect.left, closest.rect.right]]
+
+    decision = net.forward(inputs)
+    
+    print(decision.T[0])
+    if (decision.T[0][0] > 0.5): ball.jump()
+    if (decision.T[0][1] < 0.5): ball.acc.x = -1
+    elif (decision.T[0][1] > 0.5): ball.acc.x = 1
+    elif (decision.T[0][1] == 0.5): ball.acc.x = 0
+
 
     # Game loop
     WINDOW.fill(BGCOLOR)
     ball.update()
     platforms.update()
+    drawLabels()
     pygame.display.update()
     clock.tick(FPS)

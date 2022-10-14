@@ -25,17 +25,17 @@ clock = pygame.time.Clock()
 
 
 # gameplay settings
-population = 5
-initialMoves = 200
+population = 300
+initialMoves = 300
 copyBest = 15
-mutationRate = 0.12
+mutationRate = 0.15
 foodReward = 150
 
 # Physics Settings
 GRAVITY = 0.5
 FRICTION:pygame.Vector2 = pygame.Vector2(0.1, 0.02)
-JUMPIMPLUSE = 13
-BOUNCE = 0.5
+JUMPIMPLUSE = 15
+BOUNCE = 0
 
 
 

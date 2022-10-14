@@ -36,10 +36,10 @@ class NeuralNet():
     def forward(self, inputs: np.ndarray):
 
         Z1 = np.dot(self.W1,np.transpose(inputs)) + self.b1     # first hidden layer, takes the transpose input array as inputs
-        A1 = ReLU(Z1)    # sigmoid activation for hidden layer
+        A1 = sigmoid(Z1)    # sigmoid activation for hidden layer
 
         Z2 = np.dot(self.W2, A1) + self.b2  # output layer, takes activation function of previous layer as input.
-        A2 = ReLU(Z2)    # sigmoid activation for output layer
+        A2 = sigmoid(Z2)    # sigmoid activation for output layer
 
         Z3 = np.dot(self.W3, A2) + self.b3  # output layer, takes activation function of previous layer as input.
         A3 = sigmoid(Z3)    # sigmoid activation for output layer

@@ -3,7 +3,7 @@
 #   https://MoChahadeh.github.io/
 #   https://twitter.com/MoChahadeh
 
-from myPlatform import Platform
+import math
 from settings import *
 from ball import *
 from random import randint
@@ -11,7 +11,11 @@ from copy import deepcopy
 
 for i in range(population):
     balls.add(Ball(index=i))
-    nets.append(NeuralNet(5, 8, 8, 2))
+    nets.append(NeuralNet(11, 18, 12, 2))
+
+
+timelapse = False
+ticks = -1
 
 
 def drawLabels():
@@ -25,6 +29,29 @@ def drawLabels():
     WINDOW.blit(aliveText, (10,30))
     WINDOW.blit(genText, (10,10))
 
+def restartAndMutate():
+    global genNumber
+    genNumber += 1  #   incrementing Generation Number
+    maximums = np.flip(np.argsort(fitness)) #   sorts the indices of the fitnesses highest to lowest, which are the same indices for the corresponding neural nets
+    fitness.clear() # resets the fitness list
+    dead.clear()    # resets the dead list
+
+    #   resetting the sprite groups:
+    for ball in balls: ball.kill()
+
+    #   re-assigns new values to the state variables
+    for i in range(population):
+        fitness.append(0)
+        balls.add(Ball(index = i))
+        dead.append(False)
+
+        # Copies one of the best performing neurons and appends it the list of neurons
+        nets[i] = deepcopy(nets[maximums[i%copyBest]])
+        # Mutates the newly assigned neural net by a random rate between -+mutationRate defined in settings.py
+        nets[i].mutate(mutationRate + (mutationRate * i%2))
+
+
+
 while True: 
 
     # Event handler
@@ -37,6 +64,12 @@ while True:
                 ball.acc.x = 0
             if event.key == pygame.K_LEFT:
                 ball.acc.x = 0
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_t:
+                timelapse = not timelapse
+            if event.key == pygame.K_SPACE:
+                print(fitness)
+                restartAndMutate()
 
     # keyDownEvents = pygame.key.get_pressed()
 
@@ -48,21 +81,48 @@ while True:
     #     ball.acc.x = -1
 
     for ball in balls.sprites():
-        closest = list(filter(lambda x : x.rect.top < ball.pos.y,ball.platforms.sprites()))[0]
-        inputs = [[ball.pos.x, ball.pos.y, ball.inAir, closest.rect.left, closest.rect.right]]
 
-        decision = nets[ball.index].forward(inputs)
-        
-        print(decision.T[0])
-        if (decision.T[0][0] > 0.5): ball.jump()
-        if (decision.T[0][1] < 0.5): ball.acc.x = -1
-        elif (decision.T[0][1] > 0.5): ball.acc.x = 1
-        elif (decision.T[0][1] == 0.5): ball.acc.x = 0
+        if not ball.dead:
 
+            platformsAbove = [x for x in ball.platforms.sprites() if x.rect.top < ball.pos.y]
+            platformsBelow = [x for x in ball.platforms.sprites() if x.rect.top > ball.pos.y]
+
+            closestAbove = min(platformsAbove, key=lambda x: math.sqrt((x.rect.top-ball.pos.y)**2 + (x.rect.centerx-ball.pos.x)**2))
+            closest = min(ball.platforms.sprites(), key=lambda x: math.sqrt((x.rect.top-ball.rect.top)**2 + (x.rect.centerx-ball.rect.centerx)**2))
+
+            lowestAbove = max(platformsAbove, key=lambda x: x.rect.top)
+
+            if len(platformsBelow) == 0:
+                heighestBelow = lowestAbove
+            else:
+                highestBelow = min(platformsBelow, key=lambda x: x.rect.top)
+
+
+            inputs = [[ball.inAir, closestAbove.rect.centerx- ball.pos.x, closestAbove.rect.centery-ball.pos.y, closest.rect.centerx-ball.pos.y, closest.rect.centery-ball.pos.y, ball.vel.x, ball.vel.y, lowestAbove.rect.centerx-ball.pos.x, lowestAbove.rect.centery-ball.pos.y, highestBelow.rect.centerx-ball.pos.x, highestBelow.rect.centery-ball.pos.y]]
+
+            decision = nets[ball.index].forward(inputs)
+            if (decision.T[0][0] > 0.5): ball.jump()
+            if (decision.T[0][1] < 0.5): ball.acc.x = -1
+            elif (decision.T[0][1] > 0.5): ball.acc.x = 1
+            elif (decision.T[0][1] == 0.5): ball.acc.x = 0
+
+        else: 
+            dead[ball.index] = True
+
+    if (all(d == True for d in dead)):
+        print(fitness)
+        restartAndMutate()
 
     # Game loop
     WINDOW.fill(BGCOLOR)
     balls.update()
-    drawLabels()
-    pygame.display.update()
-    clock.tick(FPS)
+    ticks += 1
+    if(not timelapse):
+        balls.sprites()[np.flip(np.argsort(fitness))[0]].draw()
+        drawLabels()        # draws the labels onto the screen in each frame
+        pygame.display.update()     # updates the pygame window to show the new drawings on the screen
+        clock.tick(FPS)     # sets the frame rate of the loop
+    elif(ticks % 15 == 0):
+        balls.sprites()[np.flip(np.argsort(fitness))[0]].draw()
+        drawLabels()        # draws the labels onto the screen in each frame
+        pygame.display.update()     # updates the pygame window to show the new drawings on the screen

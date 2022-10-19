@@ -122,7 +122,7 @@ while True:
         drawLabels()        # draws the labels onto the screen in each frame
         pygame.display.update()     # updates the pygame window to show the new drawings on the screen
         clock.tick(FPS)     # sets the frame rate of the loop
-    elif(ticks % 15 == 0):
+    elif(ticks % 20 == 0):
         balls.sprites()[np.flip(np.argsort(fitness))[0]].draw()
         drawLabels()        # draws the labels onto the screen in each frame
         pygame.display.update()     # updates the pygame window to show the new drawings on the screen

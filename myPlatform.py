@@ -30,5 +30,5 @@ class Platform(pygame.sprite.Sprite):
         if self.rect.top > HEIGHT:
             fitness[self.ball.index] += 1
             self.ball.movesLeft += 60
-            self.group.add(Platform(group= self.group,ball=self.ball,x = randint(50, WIDTH-50),y= randint(-45,-10),width= 100,height= 10))
+            self.group.add(Platform(group= self.group,ball=self.ball,x = randint(50, WIDTH-50),y= randint(-35,-5),width= 100,height= 10))
             self.kill()

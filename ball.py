@@ -8,6 +8,7 @@ import pygame
 from random import randint
 from settings import *
 from myPlatform import Platform
+import math
 
 class Ball(pygame.sprite.Sprite):
 
@@ -30,6 +31,16 @@ class Ball(pygame.sprite.Sprite):
         self.movesLeft = initialMoves
 
         self.rect:pygame.rect.Rect = pygame.rect.Rect(self.pos.x - self.radius, self.pos.y - self.radius, self.radius * 2, self.radius * 2)
+
+        self.platformsAbove = [x for x in self.platforms.sprites() if x.rect.top < self.pos.y - (self.radius)*2]
+        self.platformsBelow = [x for x in self.platforms.sprites() if x.rect.top > self.pos.y]
+        self.closestAbove = min(self.platformsAbove, key=lambda x: math.sqrt((x.rect.top-self.pos.y)**2 + (x.rect.centerx-self.pos.x)**2))
+        self.closest = min(self.platforms.sprites(), key=lambda x: math.sqrt((x.rect.top-self.rect.top)**2 + (x.rect.centerx-self.rect.centerx)**2))
+        self.lowestAbove = max(self.platformsAbove, key=lambda x: x.rect.top)
+        if len(self.platformsBelow) == 0:
+            self.heighestBelow = self.lowestAbove
+        else:
+            self.highestBelow = min(self.platformsBelow, key=lambda x: x.rect.top)
     
     def draw(self):
         # pygame.gfxdraw.aacircle(WINDOW, int(self.pos.x), int(self.pos.y), self.radius, WHITECOLOR)
@@ -40,33 +51,49 @@ class Ball(pygame.sprite.Sprite):
     
     def update(self):
 
-        if not self.dead:
-            self.bounceWalls()
+        if self.dead: return
 
-            if self.inAir:
-                self.vel.y += self.acc.y
-                self.pos.y += self.vel.y
-            if self.pos.y <= HEIGHT/3 and self.vel.y < 0:
-                self.pos.y += -self.vel.y*2
-                for plat in self.platforms:
-                    plat.pos.y -= self.vel.y*2
-                    plat.rect.y -= self.vel.y*2
+        if not self.inAir:
 
-            self.vel.x += self.acc.x
-            self.pos.x += self.vel.x
-            self.vel.x -= self.vel.x * FRICTION.x
-            self.vel.y -= self.vel.y * FRICTION.y
-            self.rect = pygame.rect.Rect(self.pos.x - self.radius, self.pos.y - self.radius, self.radius * 2, self.radius * 2)
+            self.platformsAbove = [x for x in self.platforms.sprites() if x.rect.top < self.pos.y - (self.radius)*2]
+            self.platformsBelow = [x for x in self.platforms.sprites() if x.rect.top > self.pos.y]
 
-            # self.inAir = True
-            self.checkCollision()
-            self.checkDeath()
-            self.platforms.update()
-            # self.draw()
+            self.closestAbove = min(self.platformsAbove, key=lambda x: math.sqrt((x.rect.top-self.pos.y)**2 + (x.rect.centerx-self.pos.x)**2))
+            self.closest = min(self.platforms.sprites(), key=lambda x: math.sqrt((x.rect.top-self.rect.top)**2 + (x.rect.centerx-self.rect.centerx)**2))
 
-            self.movesLeft -= 1
-            if self.movesLeft <= 0:
-                self.dead = True
+            self.lowestAbove = max(self.platformsAbove, key=lambda x: x.rect.top)
+
+            if len(self.platformsBelow) == 0:
+                self.heighestBelow = self.lowestAbove
+            else:
+                self.highestBelow = min(self.platformsBelow, key=lambda x: x.rect.top)
+
+        self.bounceWalls()
+
+        if self.inAir:
+            self.vel.y += self.acc.y
+            self.pos.y += self.vel.y
+        if self.pos.y <= HEIGHT/3 and self.vel.y < 0:
+            self.pos.y += -self.vel.y*2
+            for plat in self.platforms:
+                plat.pos.y -= self.vel.y*2
+                plat.rect.y -= self.vel.y*2
+
+        self.vel.x += self.acc.x
+        self.pos.x += self.vel.x
+        self.vel.x -= self.vel.x * FRICTION.x
+        self.vel.y -= self.vel.y * FRICTION.y
+        self.rect = pygame.rect.Rect(self.pos.x - self.radius, self.pos.y - self.radius, self.radius * 2, self.radius * 2)
+
+        # self.inAir = True
+        self.checkCollision()
+        self.checkDeath()
+        self.platforms.update()
+        # self.draw()
+
+        self.movesLeft -= 1
+        if self.movesLeft <= 0:
+            self.dead = True
 
 
     def jump(self):

@@ -24,7 +24,11 @@ def drawLabels():
     aliveText = writer.render("Alive: " + str(sum(map(lambda x : x ==False, dead))), True, (255,255,255))   #   number of birds alive Label
     bestFitness = writer.render("Best Fitness: " + str(max(fitness)), True, (255,255,255))  #   Fitness of best performing Model
 
+    watermark = writer_small.render("©2023 MoChahadeh", True, (255,255,255))  #   Fitness of best performing Model
+
+
     #   Drawing the labels on the screen
+    WINDOW.blit(watermark, (10,HEIGHT-30))
     WINDOW.blit(bestFitness, (10,50))
     WINDOW.blit(aliveText, (10,30))
     WINDOW.blit(genText, (10,10))
@@ -82,26 +86,12 @@ while True:
 
     for ball in balls.sprites():
 
-        if not ball.dead:
+        if not ball.dead:                
 
-            platformsAbove = [x for x in ball.platforms.sprites() if x.rect.top < ball.pos.y]
-            platformsBelow = [x for x in ball.platforms.sprites() if x.rect.top > ball.pos.y]
-
-            closestAbove = min(platformsAbove, key=lambda x: math.sqrt((x.rect.top-ball.pos.y)**2 + (x.rect.centerx-ball.pos.x)**2))
-            closest = min(ball.platforms.sprites(), key=lambda x: math.sqrt((x.rect.top-ball.rect.top)**2 + (x.rect.centerx-ball.rect.centerx)**2))
-
-            lowestAbove = max(platformsAbove, key=lambda x: x.rect.top)
-
-            if len(platformsBelow) == 0:
-                heighestBelow = lowestAbove
-            else:
-                highestBelow = min(platformsBelow, key=lambda x: x.rect.top)
-
-
-            inputs = [[ball.inAir, closestAbove.rect.centerx- ball.pos.x, closestAbove.rect.centery-ball.pos.y, closest.rect.centerx-ball.pos.y, closest.rect.centery-ball.pos.y, ball.vel.x, ball.vel.y, lowestAbove.rect.centerx-ball.pos.x, lowestAbove.rect.centery-ball.pos.y, highestBelow.rect.centerx-ball.pos.x, highestBelow.rect.centery-ball.pos.y]]
+            inputs = [[ball.inAir, ball.closestAbove.rect.centerx- ball.pos.x, ball.closestAbove.rect.centery-ball.pos.y, ball.closest.rect.centerx-ball.pos.y, ball.closest.rect.centery-ball.pos.y, ball.vel.x, ball.vel.y, ball.lowestAbove.rect.centerx-ball.pos.x, ball.lowestAbove.rect.centery-ball.pos.y, ball.highestBelow.rect.centerx-ball.pos.x, ball.highestBelow.rect.centery-ball.pos.y]]
 
             decision = nets[ball.index].forward(inputs)
-            if (decision.T[0][0] > 0.5): ball.jump()
+            if (decision.T[0][0] >= 0.5): ball.jump()
             if (decision.T[0][1] < 0.5): ball.acc.x = -1
             elif (decision.T[0][1] > 0.5): ball.acc.x = 1
             elif (decision.T[0][1] == 0.5): ball.acc.x = 0

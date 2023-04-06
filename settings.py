@@ -50,6 +50,7 @@ WHITECOLOR = (255,255,255)
 # text writer intialization
 pygame.font.init()
 writer = pygame.font.SysFont("Roboto", 20)
+writer_small = pygame.font.SysFont("Roboto", 10)
 
 
 # Ball Sprites Group
